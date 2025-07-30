@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizzatore Chat Gemini</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+        }
+        .options-section {
+            background-color: #e0f2f7; /* Sfondo leggero per le opzioni */
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap; /* Per responsività */
+            gap: 10px;
+        }
+        .options-section label {
+            font-weight: bold;
+            color: #007bff;
+            margin-right: 10px;
+        }
+        /* Stile per il toggle switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #4CAF50; /* Verde quando attivo */
+        }
+        input:focus + .slider {
+            box-shadow: 0 0 1px #4CAF50;
+        }
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+        /* Arrotondamento per i slider */
+        .slider.round {
+            border-radius: 34px;
+        }
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .input-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #e9e9e9;
+        }
+        .input-section input[type="text"] {
+            flex: 1 1 200px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .input-section button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .input-section button:hover {
+            background-color: #45a049;
+        }
+        .chat-item {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-bottom: 1px dashed #eee;
+            background-color: #f0f0f0; /* Sfondo grigio medio */
+            border-radius: 5px;
+            gap: 10px;
+            position: relative;
+        }
+        .chat-item:last-child {
+            border-bottom: none;
+        }
+        .chat-item .title {
+            flex: 2;
+            font-weight: bold;
+            color: #0056b3;
+            min-width: 150px;
+        }
+        .chat-item .action-buttons {
+            display: flex;
+            gap: 5px;
+            margin-left: auto;
+        }
+        .chat-item .action-buttons button {
+            padding: 5px 10px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .chat-item .copy-button {
+            background-color: #6c757d; /* Grigio per copia */
+        }
+        .chat-item .copy-button:hover {
+            background-color: #5a6268;
+        }
+        .chat-item .open-button {
+            background-color: #007bff;
+        }
+        .chat-item .open-button:hover {
+            background-color: #0056b3;
+        }
+        .chat-item .edit-button {
+            background-color: #ffc107; /* Giallo per modifica */
+            color: #333;
+        }
+        .chat-item .edit-button:hover {
+            background-color: #e0a800;
+        }
+        .chat-item .remove-button {
+            background-color: #dc3545;
+        }
+        .chat-item .remove-button:hover {
+            background-color: #c82333;
+        }
+        .chat-item .url {
+            flex-basis: 100%;
+            word-break: break-all;
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .move-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-left: 10px;
+        }
+        .move-buttons button {
+            background-color: #6c757d; /* Grigio per spostamento */
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8em;
+            padding: 2px 5px;
+            line-height: 1;
+        }
+        .move-buttons button:hover {
+            background-color: #5a6268;
+        }
+        .button-group {
+            text-align: center;
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap; /* Permette il wrap su schermi piccoli */
+            justify-content: center;
+            gap: 15px; /* Spazio tra i pulsanti */
+        }
+        .button-group button, .button-group label {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            display: inline-flex; /* Per allineare il testo e l'icona se ci fosse */
+            align-items: center;
+            justify-content: center;
+            min-width: 150px; /* Per rendere i pulsanti più uniformi */
+        }
+        .button-group button:hover, .button-group label:hover {
+            background-color: #218838;
+        }
+        .button-group .csv-button {
+            background-color: #17a2b8; /* Colore diverso per CSV Export */
+        }
+        .button-group .csv-button:hover {
+            background-color: #138496;
+        }
+        .button-group .import-button {
+            background-color: #ff8c00; /* Arancione per CSV Import */
+        }
+        .button-group .import-button:hover {
+            background-color: #cc7000;
+        }
+        .button-group .clear-button {
+            background-color: #dc3545; /* Rosso per Clear Data */
+        }
+        .button-group .clear-button:hover {
+            background-color: #c82333;
+        }
+        .button-group input[type="file"] {
+            display: none; /* Nascondi l'input file effettivo */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Organizzatore Chat Gemini</h1>
+
+        <div class="options-section">
+            <label for="localStorageToggle">Salvataggio Automatico (Local Storage): </label>
+            <label class="switch">
+                <input type="checkbox" id="localStorageToggle" checked>
+                <span class="slider round"></span>
+            </label>
+        </div>
+
+        <div class="input-section">
+            <input type="text" id="chatTitle" placeholder="Titolo della chat">
+            <input type="text" id="chatUrl" placeholder="URL della chat">
+            <button onclick="addChat()">Aggiungi Chat</button>
+        </div>
+
+        <div id="chatList">
+            <div class="chat-item">
+                <span class="title">Come è nato questo progetto</span>
+                <div class="action-buttons">
+                    <button class="copy-button" onclick="copyLink('https://g.co/gemini/share/ae0498f0f632')">Copia Link</button>
+                    <button class="open-button" onclick="window.open('https://g.co/gemini/share/ae0498f0f632', '_blank')">Apri Chat</button>
+                    <button class="edit-button" onclick="editChat(this.closest('.chat-item'))">Modifica</button>
+                    <button class="remove-button" onclick="this.closest('.chat-item').remove(); saveChatsToLocalStorage();">Rimuovi</button>
+                </div>
+                <div class="move-buttons">
+                    <button onclick="moveChat(this.closest('.chat-item'), -1); saveChatsToLocalStorage();">↑</button>
+                    <button onclick="moveChat(this.closest('.chat-item'), 1); saveChatsToLocalStorage();">↓</button>
+                </div>
+                <span class="url">https://g.co/gemini/share/ae0498f0f632</span>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button onclick="saveToFile()">Salva HTML su File</button>
+            <button class="csv-button" onclick="exportToCsv()">Esporta CSV</button>
+            <label for="importCsvFile" class="import-button">Importa CSV</label>
+            <input type="file" id="importCsvFile" accept=".csv" onchange="importFromCsv(event)">
+            <button class="clear-button" onclick="confirmClearLocalStorage()">Cancella Dati Salvati</button>
+        </div>
+    </div>
+
+    <script>
+        const LOCAL_STORAGE_KEY_CHATS = 'geminiChatLinks';
+        const LOCAL_STORAGE_KEY_TOGGLE = 'localStorageEnabled';
+
+        // Funzione helper per l'escaping HTML, per prevenire problemi di sicurezza
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Funzione helper per l'escaping CSV
+        function escapeCsv(value) {
+            if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+                return `"${value.replace(/"/g, '""')}"`;
+            }
+            return value;
+        }
+
+        // --- Funzioni per Local Storage ---
+
+        // Salva l'attuale lista di chat nel Local Storage
+        function saveChatsToLocalStorage() {
+            if (isLocalStorageEnabled()) {
+                const chatItems = document.querySelectorAll('#chatList .chat-item');
+                const chats = [];
+                chatItems.forEach(item => {
+                    const title = item.querySelector('.title').textContent;
+                    const url = item.querySelector('.url').textContent;
+                    chats.push({ title: title, url: url });
+                });
+                localStorage.setItem(LOCAL_STORAGE_KEY_CHATS, JSON.stringify(chats));
+                console.log('Dati salvati automaticamente in Local Storage.');
+            }
+        }
+
+        // Carica la lista di chat dal Local Storage
+        function loadChatsFromLocalStorage() {
+            const chatListElement = document.getElementById('chatList');
+            chatListElement.innerHTML = ''; // Svuota la lista corrente prima di caricare
+
+            const storedChats = localStorage.getItem(LOCAL_STORAGE_KEY_CHATS);
+            if (storedChats) {
+                try {
+                    const chats = JSON.parse(storedChats);
+                    chats.forEach(chat => {
+                        const chatItem = createChatItemElement(chat.title, chat.url);
+                        chatListElement.appendChild(chatItem);
+                    });
+                    console.log('Dati caricati da Local Storage.');
+                } catch (e) {
+                    console.error('Errore durante il parsing dei dati da Local Storage:', e);
+                    localStorage.removeItem(LOCAL_STORAGE_KEY_CHATS); // Rimuove dati corrotti
+                    alert('Errore durante il caricamento dei dati da Local Storage. I dati potrebbero essere stati resettati.');
+                }
+            }
+        }
+
+        // Controlla se il Local Storage è abilitato
+        function isLocalStorageEnabled() {
+            const toggle = document.getElementById('localStorageToggle');
+            return toggle.checked;
+        }
+
+        // Inizializza lo stato del toggle e i dati all'avvio
+        function initializeLocalStorageToggle() {
+            const toggle = document.getElementById('localStorageToggle');
+            const enabled = localStorage.getItem(LOCAL_STORAGE_KEY_TOGGLE) === 'true';
+            toggle.checked = enabled;
+
+            toggle.addEventListener('change', () => {
+                localStorage.setItem(LOCAL_STORAGE_KEY_TOGGLE, toggle.checked);
+                if (toggle.checked) {
+                    // Se abilitato, sincronizza lo stato attuale della pagina con LS
+                    saveChatsToLocalStorage();
+                    alert('Salvataggio automatico abilitato. I dati nella pagina sono stati sincronizzati con il Local Storage.');
+                } else {
+                    // Se disabilitato, non facciamo nulla in automatico con i dati esistenti,
+                    // l'utente userà il pulsante "Cancella Dati Salvati" se vuole rimuoverli.
+                    alert('Salvataggio automatico disabilitato. Le modifiche future non verranno salvate automaticamente in Local Storage.');
+                }
+            });
+
+            // Carica i dati da Local Storage all'avvio solo se abilitato e ci sono dati
+            if (enabled) {
+                loadChatsFromLocalStorage();
+            } else {
+                // Se LS non abilitato, o se non ci sono dati in LS ma il toggle è su ON
+                // si presuppone che l'HTML statico debba essere usato come fallback iniziale
+                // non facciamo nulla, gli elementi statici dell'HTML rimarranno
+            }
+        }
+
+        // Funzione per chiedere conferma e cancellare i dati di Local Storage
+        function confirmClearLocalStorage() {
+            if (confirm('Sei sicuro di voler cancellare TUTTI i dati salvati automaticamente (Local Storage)? Questa azione non può essere annullata.')) {
+                localStorage.removeItem(LOCAL_STORAGE_KEY_CHATS);
+                document.getElementById('chatList').innerHTML = ''; // Svuota la visualizzazione
+                alert('Dati di Local Storage cancellati con successo!');
+                console.log('Dati di Local Storage cancellati.');
+            }
+        }
+
+
+        // --- Funzioni Chat Management ---
+
+        // Funzione per creare un singolo elemento chat nel DOM
+        function createChatItemElement(title, url) {
+            const chatItemDiv = document.createElement('div');
+            chatItemDiv.className = 'chat-item';
+
+            const titleSpan = document.createElement('span');
+            titleSpan.className = 'title';
+            titleSpan.textContent = title;
+
+            const actionButtonsDiv = document.createElement('div');
+            actionButtonsDiv.className = 'action-buttons';
+
+            // Pulsante Copia Link
+            const copyButton = document.createElement('button');
+            copyButton.className = 'copy-button';
+            copyButton.textContent = 'Copia Link';
+            copyButton.onclick = () => copyLink(url);
+
+            const openButton = document.createElement('button');
+            openButton.className = 'open-button';
+            openButton.textContent = 'Apri Chat';
+            openButton.onclick = () => window.open(url, '_blank');
+
+            const editButton = document.createElement('button');
+            editButton.className = 'edit-button';
+            editButton.textContent = 'Modifica';
+            editButton.onclick = (event) => editChat(event.target.closest('.chat-item'));
+
+            const removeButton = document.createElement('button');
+            removeButton.className = 'remove-button';
+            removeButton.textContent = 'Rimuovi';
+            removeButton.onclick = (event) => {
+                event.target.closest('.chat-item').remove();
+                saveChatsToLocalStorage(); // Salva dopo la rimozione
+            };
+
+            actionButtonsDiv.appendChild(copyButton); // Aggiungi il pulsante copia
+            actionButtonsDiv.appendChild(openButton);
+            actionButtonsDiv.appendChild(editButton);
+            actionButtonsDiv.appendChild(removeButton);
+
+            const urlSpan = document.createElement('span');
+            urlSpan.className = 'url';
+            urlSpan.textContent = url;
+
+            const moveButtonsDiv = document.createElement('div');
+            moveButtonsDiv.className = 'move-buttons';
+
+            const moveUpButton = document.createElement('button');
+            moveUpButton.textContent = '↑';
+            moveUpButton.onclick = (event) => {
+                moveChat(event.target.closest('.chat-item'), -1);
+                saveChatsToLocalStorage(); // Salva dopo lo spostamento
+            };
+
+            const moveDownButton = document.createElement('button');
+            moveDownButton.textContent = '↓';
+            moveDownButton.onclick = (event) => {
+                moveChat(event.target.closest('.chat-item'), 1);
+                saveChatsToLocalStorage(); // Salva dopo lo spostamento
+            };
+
+            moveButtonsDiv.appendChild(moveUpButton);
+            moveButtonsDiv.appendChild(moveDownButton);
+
+            chatItemDiv.appendChild(titleSpan);
+            chatItemDiv.appendChild(actionButtonsDiv);
+            chatItemDiv.appendChild(moveButtonsDiv);
+            chatItemDiv.appendChild(urlSpan);
+
+            return chatItemDiv;
+        }
+
+        // Funzione per copiare l'URL negli appunti
+        function copyLink(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                alert('URL copiato negli appunti: ' + url);
+            }).catch(err => {
+                console.error('Errore durante la copia dell\'URL:', err);
+                alert('Impossibile copiare l\'URL automaticamente. Copia manualmente: ' + url);
+            });
+        }
+
+        // Funzione per aggiungere una chat dall'input
+        function addChat() {
+            const titleInput = document.getElementById('chatTitle');
+            const urlInput = document.getElementById('chatUrl');
+            const title = titleInput.value.trim();
+            const url = urlInput.value.trim();
+
+            if (title && url) {
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    alert('L\'URL deve iniziare con http:// o https://');
+                    return;
+                }
+                const chatItem = createChatItemElement(title, url);
+                document.getElementById('chatList').appendChild(chatItem);
+                titleInput.value = '';
+                urlInput.value = '';
+                saveChatsToLocalStorage(); // Salva dopo l'aggiunta
+            } else {
+                alert('Per favore, inserisci sia il titolo che l\'URL della chat.');
+            }
+        }
+
+        // Funzione per modificare una chat esistente
+        function editChat(chatItemDiv) {
+            const currentTitle = chatItemDiv.querySelector('.title').textContent;
+            const currentUrl = chatItemDiv.querySelector('.url').textContent;
+
+            const newTitle = prompt('Modifica Titolo:', currentTitle);
+            if (newTitle === null) return; // L'utente ha annullato
+
+            const newUrl = prompt('Modifica URL:', currentUrl);
+            if (newUrl === null) return; // L'utente ha annullato
+
+            if (newTitle.trim() && newUrl.trim()) {
+                if (!newUrl.startsWith('http://') && !newUrl.startsWith('https://')) {
+                    alert('L\'URL deve iniziare con http:// o https://');
+                    return;
+                }
+                chatItemDiv.querySelector('.title').textContent = newTitle.trim();
+                chatItemDiv.querySelector('.url').textContent = newUrl.trim();
+                // Aggiorna l'onclick del bottone Apri e Copia
+                chatItemDiv.querySelector('.open-button').onclick = () => window.open(newUrl.trim(), '_blank');
+                chatItemDiv.querySelector('.copy-button').onclick = () => copyLink(newUrl.trim());
+                saveChatsToLocalStorage(); // Salva dopo la modifica
+            } else {
+                alert('Titolo e URL non possono essere vuoti.');
+            }
+        }
+
+        // Funzione per spostare una chat su o giù (già modificata per salvare)
+        function moveChat(chatItemDiv, direction) {
+            const parent = chatItemDiv.parentNode;
+            const siblings = Array.from(parent.children);
+            const currentIndex = siblings.indexOf(chatItemDiv);
+            const newIndex = currentIndex + direction;
+
+            if (newIndex >= 0 && newIndex < siblings.length) {
+                if (direction === -1) {
+                    parent.insertBefore(chatItemDiv, siblings[newIndex]);
+                } else {
+                    parent.insertBefore(chatItemDiv, siblings[newIndex].nextSibling);
+                }
+                saveChatsToLocalStorage(); // Salva dopo lo spostamento
+            }
+        }
+
+
+        // Funzione per generare il codice HTML delle chat attuali (usato nel salvataggio)
+        function generateChatsHtml() {
+            const chatItems = document.querySelectorAll('#chatList .chat-item');
+            let chatsHtml = '';
+            chatItems.forEach(item => {
+                const title = item.querySelector('.title').textContent;
+                const url = item.querySelector('.url').textContent;
+                // Ricrea la stringa HTML per ogni elemento per includerla nel file salvato
+                chatsHtml += `
+            <div class="chat-item">
+                <span class="title">${escapeHtml(title)}</span>
+                <div class="action-buttons">
+                    <button class="copy-button" onclick="copyLink('${escapeHtml(url)}')">Copia Link</button>
+                    <button class="open-button" onclick="window.open('${escapeHtml(url)}', '_blank')">Apri Chat</button>
+                    <button class="edit-button" onclick="editChat(this.closest('.chat-item'))">Modifica</button>
+                    <button class="remove-button" onclick="this.closest('.chat-item').remove(); saveChatsToLocalStorage();">Rimuovi</button>
+                </div>
+                <div class="move-buttons">
+                    <button onclick="moveChat(this.closest('.chat-item'), -1); saveChatsToLocalStorage();">↑</button>
+                    <button onclick="moveChat(this.closest('.chat-item'), 1); saveChatsToLocalStorage();">↓</button>
+                </div>
+                <span class="url">${escapeHtml(url)}</span>
+            </div>`;
+            });
+            return chatsHtml.trim();
+        }
+
+        // Funzione per salvare l'intera pagina su un nuovo file HTML
+        function saveToFile() {
+            const styleContent = document.querySelector('style').textContent;
+            const scriptContent = document.querySelector('script').textContent;
+            const newChatsHtml = generateChatsHtml();
+
+            // Costruisci l'HTML finale, includendo lo stato del toggle di localStorage
+            const finalHtml = `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizzatore Chat Gemini</title>
+    <style>${styleContent}</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Organizzatore Chat Gemini</h1>
+
+        <div class="options-section">
+            <label for="localStorageToggle">Salvataggio Automatico (Local Storage): </label>
+            <label class="switch">
+                <input type="checkbox" id="localStorageToggle" ${isLocalStorageEnabled() ? 'checked' : ''}>
+                <span class="slider round"></span>
+            </label>
+        </div>
+
+        <div class="input-section">
+            <input type="text" id="chatTitle" placeholder="Titolo della chat">
+            <input type="text" id="chatUrl" placeholder="URL della chat">
+            <button onclick="addChat()">Aggiungi Chat</button>
+        </div>
+
+        <div id="chatList">
+            ${newChatsHtml}
+        </div>
+
+        <div class="button-group">
+            <button onclick="saveToFile()">Salva HTML su File</button>
+            <button class="csv-button" onclick="exportToCsv()">Esporta CSV</button>
+            <label for="importCsvFile" class="import-button">Importa CSV</label>
+            <input type="file" id="importCsvFile" accept=".csv" onchange="importFromCsv(event)">
+            <button class="clear-button" onclick="confirmClearLocalStorage()">Cancella Dati Salvati</button>
+        </div>
+    </div>
+
+    <script>${scriptContent}<\/script>
+</body>
+</html>`;
+
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const timestamp = `${year}${month}${day}${hours}${minutes}`;
+            const fileName = `gemini_Links_${timestamp}.html`;
+
+            const blob = new Blob([finalHtml], { type: 'text/html' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(a.href);
+            alert(`File salvato con successo come "${fileName}"! Ricorda di usare il file scaricato per le modifiche future.`);
+        }
+
+        // Funzione per esportare i dati delle chat in un file CSV
+        function exportToCsv() {
+            const chatItems = document.querySelectorAll('#chatList .chat-item');
+            let csvContent = "Titolo,URL\n";
+
+            chatItems.forEach(item => {
+                const title = item.querySelector('.title').textContent;
+                const url = item.querySelector('.url').textContent;
+                csvContent += `${escapeCsv(title)},${escapeCsv(url)}\n`;
+            });
+
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const timestamp = `${year}${month}${day}${hours}${minutes}`;
+            const fileName = `gemini_Links_${timestamp}.csv`;
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(a.href);
+            alert(`Dati esportati con successo come "${fileName}"!`);
+        }
+
+        // Funzione per importare i dati da un file CSV
+        function importFromCsv(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const csvText = e.target.result;
+                parseCsvAndAddChats(csvText);
+                saveChatsToLocalStorage(); // Salva in LS dopo l'importazione (se abilitato)
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // Funzione per parsare il CSV e aggiungere le chat
+        function parseCsvAndAddChats(csvText) {
+            const lines = csvText.split('\n').filter(line => line.trim() !== '');
+            const chatListElement = document.getElementById('chatList');
+
+            let startIndex = 0;
+            if (lines.length > 0 && lines[0].startsWith('Titolo,URL')) {
+                startIndex = 1;
+            }
+
+            let chatsAddedCount = 0;
+            let chatsSkippedCount = 0;
+
+            for (let i = startIndex; i < lines.length; i++) {
+                const line = lines[i];
+                const parts = parseCsvLine(line);
+
+                if (parts.length === 2) {
+                    const title = parts[0].trim();
+                    const url = parts[1].trim();
+
+                    if (title && url) {
+                        const existingChats = Array.from(chatListElement.children);
+                        const isDuplicate = existingChats.some(chat =>
+                            chat.querySelector('.title').textContent === title &&
+                            chat.querySelector('.url').textContent === url
+                        );
+
+                        if (!isDuplicate) {
+                            if (url.startsWith('http://') || url.startsWith('https://')) {
+                                const chatItem = createChatItemElement(title, url);
+                                chatListElement.appendChild(chatItem);
+                                chatsAddedCount++;
+                            } else {
+                                console.warn(`Skipping invalid URL: "${url}" for title: "${title}"`);
+                                chatsSkippedCount++;
+                            }
+                        } else {
+                            console.log(`Skipping duplicate chat: "${title}" - "${url}"`);
+                            chatsSkippedCount++;
+                        }
+                    } else {
+                        console.warn(`Skipping incomplete CSV line (missing title or URL): "${line}"`);
+                        chatsSkippedCount++;
+                    }
+                } else {
+                    console.warn(`Skipping malformed CSV line (expected 2 columns): "${line}"`);
+                    chatsSkippedCount++;
+                }
+            }
+            alert(`Importazione CSV completata: ${chatsAddedCount} chat aggiunte, ${chatsSkippedCount} chat ignorate (duplicati, URL non validi o formato errato). Controlla la console del browser per i dettagli.`);
+        }
+
+        // Funzione di parsing CSV robusta
+        function parseCsvLine(line) {
+            const result = [];
+            let inQuote = false;
+            let currentField = '';
+
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"' && (i + 1 < line.length && line[i + 1] === '"')) {
+                    currentField += '"';
+                    i++;
+                } else if (char === '"') {
+                    inQuote = !inQuote;
+                } else if (char === ',' && !inQuote) {
+                    result.push(currentField);
+                    currentField = '';
+                } else {
+                    currentField += char;
+                }
+            }
+            result.push(currentField);
+            return result;
+        }
+
+        // --- Inizializzazione all'avvio della pagina ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeLocalStorageToggle(); // Inizializza il toggle e carica/non carica i dati
+        });
+    </script>
+</body>
+</html>
