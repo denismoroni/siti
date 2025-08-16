@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Wars Helper Installation</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .modal-header {
+            cursor: move;
+            text-align: center;
+        }
+        
+        .resize-handle {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .resize-handle-br { /* Bottom-Right */
+            bottom: 0;
+            right: 0;
+            cursor: nwse-resize;
+            border-bottom-right-radius: 6px;
+        }
+
+        .resize-handle-bl { /* Bottom-Left */
+            bottom: 0;
+            left: 0;
+            cursor: nesw-resize;
+            border-bottom-left-radius: 6px;
+        }
+
+        .resize-handle-tr { /* Top-Right */
+            top: 0;
+            right: 0;
+            cursor: nesw-resize;
+            border-top-right-radius: 6px;
+        }
+
+        .resize-handle-tl { /* Top-Left */
+            top: 0;
+            left: 0;
+            cursor: nwse-resize;
+            border-top-left-radius: 6px;
+        }
+
+        /* Nuova regola CSS per il posizionamento del modale dei colori */
+        #colorsModalContent, #textModalContent {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            resize: both;
+            overflow: hidden;
+            width: 400px; /* Larghezza predefinita */
+            height: 600px; /* Altezza predefinita */
+            min-width: 300px;
+            min-height: 400px; /* Altezza minima adeguata */
+        }
+        
+        /* Regola di default per l'allineamento centrato */
+        #installationTable td > div,
+        #installationTable td > img {
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body class="p-6">
+    <div class="container mx-auto p-8 rounded-lg shadow-md">
+        <h1 class="text-3xl font-bold text-center mb-8">How to Install Hero Wars Helper</h1>
+        
+        <div class="controls mb-4 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <input type="checkbox" id="localStorageToggle" class="form-checkbox h-5 w-5 text-gray-600">
+                <label for="localStorageToggle" class="text-lg">Salva automaticamente su Local Storage</label>
+            </div>
+            <div class="flex flex-wrap justify-end space-x-2">
+                <button id="editGlobalTitlesBtn" class="bg-yellow-500 text-white px-4 py-2 rounded mt-2">Parole</button>
+                <button id="editColorsBtn" class="bg-gray-500 text-white px-4 py-2 rounded mt-2">Colori</button>
+                <button id="editTextBtn" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">Metrica</button>
+                <button id="importJsonBtn" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">Importa</button>
+                <button id="exportJsonBtn" class="bg-green-500 text-white px-4 py-2 rounded mt-2">Esporta</button>
+                <button id="clearLocalStorageBtn" class="bg-red-500 text-white px-4 py-2 rounded mt-2">Reset</button>
+            </div>
+        </div>
+
+        <table id="installationTable" class="mx-auto">
+            <thead>
+                <tr>
+                    <th>Installation Steps</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
+
+        <div class="mt-8 text-center">
+            <button id="addStepBtn" class="bg-purple-500 text-white px-4 py-2 rounded">Aggiungi Sezione</button>
+        </div>
+    </div>
+
+    <div id="editModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <h3 class="text-2xl font-bold mb-4">Modifica Sezione</h3>
+            <div class="mb-4">
+                <label for="modalTitle" class="block text-gray-700">Titolo</label>
+                <input type="text" id="modalTitle" class="w-full p-2 border rounded">
+            </div>
+            <div class="mb-4">
+                <label for="modalDescription" class="block text-gray-700">Descrizione</label>
+                <textarea id="modalDescription" class="w-full p-2 border rounded"></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="modalImage" class="block text-gray-700">Nome Immagine (in cartella IMG)</label>
+                <select id="modalImage" class="w-full p-2 border rounded">
+                    </select>
+            </div>
+            <div class="mb-4">
+                <label for="modalLink" class="block text-gray-700">Link (opzionale)</label>
+                <input type="text" id="modalLink" class="w-full p-2 border rounded">
+            </div>
+			<div class="mb-4">
+            <label class="flex items-center">
+            <input type="checkbox" id="modalLinkConfirm" class="form-checkbox h-5 w-5 text-gray-600" checked>
+            <span class="ml-2 text-gray-700">Chiedi conferma prima di aprire il link</span>
+            </label>
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button id="saveModalBtn" class="bg-green-500 text-white px-4 py-2 rounded">Salva</button>
+                <button id="closeModalBtn" class="bg-red-500 text-white px-4 py-2 rounded">Annulla</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="editGlobalTitlesModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <h3 class="text-2xl font-bold mb-4">Modifica Titoli Globali</h3>
+            <div class="mb-4">
+                <label for="modalGlobalTitle" class="block text-gray-700">Titolo Tab del Browser</label>
+                <input type="text" id="modalGlobalTitle" class="w-full p-2 border rounded">
+            </div>
+            <div class="mb-4">
+                <label for="modalGlobalHeading" class="block text-gray-700">Intestazione Principale</label>
+                <input type="text" id="modalGlobalHeading" class="w-full p-2 border rounded">
+            </div>
+            <div class="mb-4">
+                <label for="modalGlobalTableHeading" class="block text-gray-700">Titolo Sezioni</label>
+                <input type="text" id="modalGlobalTableHeading" class="w-full p-2 border rounded">
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button id="saveGlobalTitlesBtn" class="bg-green-500 text-white px-4 py-2 rounded">Salva</button>
+                <button id="closeGlobalTitlesBtn" class="bg-red-500 text-white px-4 py-2 rounded">Annulla</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="editColorsModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div id="colorsModalContent" class="p-5 border shadow-lg rounded-md bg-white">
+            <div id="colorsModalHeader" class="modal-header">
+                <h3 class="text-2xl font-bold mb-4">Modifica Colori</h3>
+            </div>
+            <div id="colorsModalBody" class="p-2 overflow-y-auto">
+                <div class="mb-4">
+                    <label for="modalBodyBgColor" class="block text-gray-700">Sfondo Pagina</label>
+                    <input type="color" id="modalBodyBgColor" class="w-full p-1 border rounded" value="#A3A3A3">
+                </div>
+                <div class="mb-4">
+                    <label for="modalContainerBgColor" class="block text-gray-700">Sfondo Contenitore</label>
+                    <input type="color" id="modalContainerBgColor" class="w-full p-1 border rounded" value="#D3D3D3">
+                </div>
+                <div class="mb-4">
+                    <label for="modalTableBgColor" class="block text-gray-700">Sfondo Tabella</label>
+                    <input type="color" id="modalTableBgColor" class="w-full p-1 border rounded" value="#AA7742">
+                </div>
+                <div class="mb-4">
+                    <label for="modalMainHeadingColor" class="block text-gray-700">Colore Intestazione Principale</label>
+                    <input type="color" id="modalMainHeadingColor" class="w-full p-1 border rounded" value="#000000">
+                </div>
+                <div class="mb-4">
+                    <label for="modalTableHeadingColor" class="block text-gray-700">Colore Titolo Sezioni</label>
+                    <input type="color" id="modalTableHeadingColor" class="w-full p-1 border rounded" value="#000000">
+                </div>
+                <div class="mb-4">
+                    <label for="modalSectionTitleColor" class="block text-gray-700">Colore Titoli Sezioni</label>
+                    <input type="color" id="modalSectionTitleColor" class="w-full p-1 border rounded" value="#000000">
+                </div>
+                <div class="mb-4">
+                    <label for="modalDescriptionColor" class="block text-gray-700">Colore Descrizioni</label>
+                    <input type="color" id="modalDescriptionColor" class="w-full p-1 border rounded" value="#000000">
+                </div>
+            </div>
+            <div class="flex justify-end space-x-2 p-2">
+                <button id="saveColorsBtn" class="bg-green-500 text-white px-4 py-2 rounded">Salva</button>
+                <button id="closeColorsBtn" class="bg-red-500 text-white px-4 py-2 rounded">Annulla</button>
+            </div>
+            <div id="colorsResizeHandleTL" class="resize-handle resize-handle-tl" data-direction="tl"></div>
+            <div id="colorsResizeHandleTR" class="resize-handle resize-handle-tr" data-direction="tr"></div>
+            <div id="colorsResizeHandleBL" class="resize-handle resize-handle-bl" data-direction="bl"></div>
+            <div id="colorsResizeHandleBR" class="resize-handle resize-handle-br" data-direction="br"></div>
+        </div>
+    </div>
+
+    <div id="editTextModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div id="textModalContent" class="p-5 border shadow-lg rounded-md bg-white">
+            <div id="textModalHeader" class="modal-header">
+                <h3 class="text-2xl font-bold mb-4">Modifica Testo</h3>
+            </div>
+            <div id="textModalBody" class="p-2 overflow-y-auto">
+                <div class="mb-4">
+                    <label for="headingFont" class="block text-gray-700">Font per Titoli e Intestazioni</label>
+                    <select id="headingFont" class="w-full p-2 border rounded"></select>
+                </div>
+                <div class="mb-4">
+                    <label for="descriptionFont" class="block text-gray-700">Font per Descrizioni</label>
+                    <select id="descriptionFont" class="w-full p-2 border rounded"></select>
+                </div>
+                <hr class="my-4">
+                <div class="mb-4">
+                    <label for="mainHeadingSize" class="block text-gray-700">Dimensione Intestazione Principale</label>
+                    <div class="flex items-center">
+                        <button id="decreaseMainHeadingSizeBtn" class="px-3 py-1 bg-gray-200 rounded-l">-</button>
+                        <input type="number" id="mainHeadingSize" class="w-24 p-1 text-center border-t border-b" value="40" min="8" max="72">
+                        <button id="increaseMainHeadingSizeBtn" class="px-3 py-1 bg-gray-200 rounded-r">+</button>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="tableHeadingSize" class="block text-gray-700">Dimensione Titolo Tabella</label>
+                    <div class="flex items-center">
+                        <button id="decreaseTableHeadingSizeBtn" class="px-3 py-1 bg-gray-200 rounded-l">-</button>
+                        <input type="number" id="tableHeadingSize" class="w-24 p-1 text-center border-t border-b" value="40" min="8" max="72">
+                        <button id="increaseTableHeadingSizeBtn" class="px-3 py-1 bg-gray-200 rounded-r">+</button>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="sectionTitleSize" class="block text-gray-700">Dimensione Titoli Sezioni</label>
+                    <div class="flex items-center">
+                        <button id="decreaseSectionTitleSizeBtn" class="px-3 py-1 bg-gray-200 rounded-l">-</button>
+                        <input type="number" id="sectionTitleSize" class="w-24 p-1 text-center border-t border-b" value="40" min="8" max="72">
+                        <button id="increaseSectionTitleSizeBtn" class="px-3 py-1 bg-gray-200 rounded-r">+</button>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="descriptionSize" class="block text-gray-700">Dimensione Descrizioni</label>
+                    <div class="flex items-center">
+                        <button id="decreaseDescriptionSizeBtn" class="px-3 py-1 bg-gray-200 rounded-l">-</button>
+                        <input type="number" id="descriptionSize" class="w-24 p-1 text-center border-t border-b" value="20" min="8" max="72">
+                        <button id="increaseDescriptionSizeBtn" class="px-3 py-1 bg-gray-200 rounded-r">+</button>
+                    </div>
+                </div>
+                <hr class="my-4">
+                <div class="mb-4 flex items-center space-x-4">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="headingBold" class="form-checkbox h-5 w-5 text-gray-600">
+                        <span class="ml-2 text-gray-700">Titoli in grassetto</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="headingItalic" class="form-checkbox h-5 w-5 text-gray-600">
+                        <span class="ml-2 text-gray-700">Titoli in corsivo</span>
+                    </label>
+                </div>
+                <div class="mb-4 flex items-center space-x-4">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="descriptionBold" class="form-checkbox h-5 w-5 text-gray-600">
+                        <span class="ml-2 text-gray-700">Descrizioni in grassetto</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="descriptionItalic" class="form-checkbox h-5 w-5 text-gray-600">
+                        <span class="ml-2 text-gray-700">Descrizioni in corsivo</span>
+                    </label>
+                </div>
+                <hr class="my-4">
+                <div class="mb-4">
+                    <label for="titleAlignment" class="block text-gray-700">Allineamento Titoli</label>
+                    <select id="titleAlignment" class="w-full p-2 border rounded">
+                        <option value="left">Sinistra</option>
+                        <option value="center">Centro</option>
+                        <option value="right">Destra</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="descriptionAlignment" class="block text-gray-700">Allineamento Descrizioni</label>
+                    <select id="descriptionAlignment" class="w-full p-2 border rounded">
+                        <option value="left">Sinistra</option>
+                        <option value="center">Centro</option>
+                        <option value="right">Destra</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="imageAlignment" class="block text-gray-700">Allineamento Immagini</label>
+                    <select id="imageAlignment" class="w-full p-2 border rounded">
+                        <option value="left">Sinistra</option>
+                        <option value="center">Centro</option>
+                        <option value="right">Destra</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-end space-x-2 p-2">
+                <button id="saveTextBtn" class="bg-green-500 text-white px-4 py-2 rounded">Salva</button>
+                <button id="closeTextBtn" class="bg-red-500 text-white px-4 py-2 rounded">Annulla</button>
+            </div>
+            <div id="textResizeHandleTL" class="resize-handle resize-handle-tl" data-direction="tl"></div>
+            <div id="textResizeHandleTR" class="resize-handle resize-handle-tr" data-direction="tr"></div>
+            <div id="textResizeHandleBL" class="resize-handle resize-handle-bl" data-direction="bl"></div>
+            <div id="textResizeHandleBR" class="resize-handle resize-handle-br" data-direction="br"></div>
+        </div>
+    </div>
+
+
+    <div id="redirectModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <h3 class="text-2xl font-bold mb-4">Reindirizzamento</h3>
+            <p id="redirectText" class="mb-4"></p>
+            <div class="flex justify-end space-x-2">
+                <button id="confirmRedirectBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Vai al link</button>
+                <button id="cancelRedirectBtn" class="bg-red-500 text-white px-4 py-2 rounded">Annulla</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="script.js"></script>
+</body>
+</html>
