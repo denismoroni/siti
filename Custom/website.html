@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sito Personalizzato</title>
+    <style>
+        body {
+            background-color: #4650ff;
+            margin: 0;
+            padding: 1.5rem;
+            box-sizing: border-box;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            background-color: #e9cabe;
+            box-sizing: border-box;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-family: Arial, sans-serif;
+            font-size: 40px;
+            font-weight: bold;
+            font-style: normal;
+            color: #010998;
+            word-break: break-word;
+        }
+        #installationTable {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #6c9f87;
+            box-sizing: border-box;
+            table-layout: auto;
+            word-break: break-word;
+        }
+        #installationTable th, #installationTable td {
+            border: none;
+            padding: 1rem;
+            vertical-align: top;
+            word-break: break-word;
+        }
+        #installationTable th {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            font-size: 40px;
+            font-weight: bold;
+            font-style: normal;
+            color: #70035c;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 1.5rem;
+        }
+        .image-title {
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            font-size: 2em;
+        }
+        .step-description {
+            margin-top: 0.5rem;
+            font-size: 1.2em;
+        }
+        /* Responsive: ridimensiona contenitore, testo e padding su schermi piccoli */
+        @media (max-width: 600px) {
+            .container {
+                padding: 0.5rem;
+            }
+            #installationTable th, #installationTable td {
+                padding: 0.5rem;
+                font-size: 1em;
+            }
+            h1 {
+                font-size: 1.3em !important;
+                padding: 0.5rem 0;
+            }
+            .image-title, .step-description {
+                font-size: 1em !important;
+            }
+        }
+        @media print {
+            #installationTable th, #installationTable td {
+                border: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sito Personalizzato</h1>
+        <table id="installationTable">
+            <thead>
+                <tr>
+                    <th>Come usarlo</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                <tr >
+                    <td>
+                        <div class="image-title" style="font-family: Arial, sans-serif; font-size: 40px; color: #6c5c00; font-weight: bold; font-style: normal; text-align: center;">I bottoni presenti in cima</div>
+                        <div class="step-description" style="font-family: Arial, sans-serif; font-size: 20px; color: #203644; font-weight: normal; font-style: normal; text-align: center;">serviranno a farti personalizzare come vorresti la pagina</div>
+                        <img src="IMG/1.jpg" alt="I bottoni presenti in cima">
+                    </td>
+                </tr>
+            
+                <tr >
+                    <td>
+                        <div class="image-title" style="font-family: Arial, sans-serif; font-size: 40px; color: #6c5c00; font-weight: bold; font-style: normal; text-align: center;">La sezione 'Parole' </div>
+                        <div class="step-description" style="font-family: Arial, sans-serif; font-size: 20px; color: #203644; font-weight: normal; font-style: normal; text-align: center;">ti permetterà di decidere le parole contenute nel tuo testo</div>
+                        <img src="IMG/2.jpg" alt="La sezione 'Parole' ">
+                    </td>
+                </tr>
+            
+                <tr >
+                    <td>
+                        <div class="image-title" style="font-family: Arial, sans-serif; font-size: 40px; color: #6c5c00; font-weight: bold; font-style: normal; text-align: center;">La sezione 'Colori' </div>
+                        <div class="step-description" style="font-family: Arial, sans-serif; font-size: 20px; color: #203644; font-weight: normal; font-style: normal; text-align: center;">ti consentirà invece di decidere i colori del testo e degli sfondi</div>
+                        <img src="IMG/3.jpg" alt="La sezione 'Colori' ">
+                    </td>
+                </tr>
+            
+                <tr >
+                    <td>
+                        <div class="image-title" style="font-family: Arial, sans-serif; font-size: 40px; color: #6c5c00; font-weight: bold; font-style: normal; text-align: center;">La sezione 'Metrica'</div>
+                        <div class="step-description" style="font-family: Arial, sans-serif; font-size: 20px; color: #203644; font-weight: normal; font-style: normal; text-align: center;">regola font, grandezze, allineamenti e stile dei testi</div>
+                        <img src="IMG/4.jpg" alt="La sezione 'Metrica'">
+                    </td>
+                </tr>
+            
+                <tr >
+                    <td>
+                        <div class="image-title" style="font-family: Arial, sans-serif; font-size: 40px; color: #6c5c00; font-weight: bold; font-style: normal; text-align: center;"> Potrai modificare ogni sezione </div>
+                        <div class="step-description" style="font-family: Arial, sans-serif; font-size: 20px; color: #203644; font-weight: normal; font-style: normal; text-align: center;">per testo, immagini e link</div>
+                        <img src="IMG/5b.jpg" alt=" Potrai modificare ogni sezione ">
+                    </td>
+                </tr>
+            
+                <tr >
+                    <td>
+                        <div class="image-title" style="font-family: Arial, sans-serif; font-size: 40px; color: #6c5c00; font-weight: bold; font-style: normal; text-align: center;"> Esporta, importa o resetta </div>
+                        <div class="step-description" style="font-family: Arial, sans-serif; font-size: 20px; color: #203644; font-weight: normal; font-style: normal; text-align: center;">salva la tua configurazione, ricaricala o riparti da zero</div>
+                        <img src="IMG/5.jpg" alt=" Esporta, importa o resetta ">
+                    </td>
+                </tr>
+            
+                <tr >
+                    <td>
+                        <div class="image-title" style="font-family: Arial, sans-serif; font-size: 40px; color: #6c5c00; font-weight: bold; font-style: normal; text-align: center;"> dal tuo file esportato </div>
+                        <div class="step-description" style="font-family: Arial, sans-serif; font-size: 20px; color: #203644; font-weight: normal; font-style: normal; text-align: center;">potrò creare una nuova pagina ( mi dovrai passare le tue immagini )</div>
+                        <img src="IMG/9.png" alt=" dal tuo file esportato ">
+                    </td>
+                </tr>
+            
+                <tr onclick="window.open('https://wa.me/393496887076?text=Ciao.%20mi%20interessa%20il%20sito%20personalizzato', '_blank');">
+                    <td>
+                        <div class="image-title" style="font-family: Arial, sans-serif; font-size: 40px; color: #6c5c00; font-weight: bold; font-style: normal; text-align: center;"> Contattami su Whatsapp </div>
+                        <div class="step-description" style="font-family: Arial, sans-serif; font-size: 20px; color: #203644; font-weight: normal; font-style: normal; text-align: center;">cliccando qui - solo messaggi di testo perfavore.</div>
+                        <img src="IMG/6.png" alt=" Contattami su Whatsapp ">
+                    </td>
+                </tr>
+            
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
