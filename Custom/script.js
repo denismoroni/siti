@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 title: " dal tuo file esportato ",
                 description: "potrò creare una nuova pagina ( mi dovrai passare le tue immagini )",
                 image: "9.png",
-                link: ""
+                link: "https://denismoroni.github.io/siti/Custom/website.html"
             },
             {
                 title: " Contattami su Whatsapp ",
@@ -809,4 +809,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     loadData();
+
 });
