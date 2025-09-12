@@ -1,5 +1,6 @@
 // =================================================================================
-// FILE: template.js - Il Modello
+// FILE: template.js - Il Modello  # Ignora il template del sito finale per mantenerlo privato
+//  template.js
 // Contiene la funzione per generare l'HTML finale del progetto esportato.
 // =================================================================================
 
@@ -140,4 +141,5 @@ const generateFinalHtml = (enabledLangs) => {
     <\/script>
 </body>
 </html>`;
+
 };
