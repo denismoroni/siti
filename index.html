@@ -3,38 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Denis Moroni</title>
+    <title>Denis Moroni | Links</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { 
-            background-color: #f5f5f5; 
-            font-family: sans-serif; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
-        }
-        .container { width: 90%; max-width: 400px; text-align: center; }
-        h1 { color: #333; margin-bottom: 20px; }
+        body { background-color: #f5f5f5; font-family: 'Segoe UI', Tahoma, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { width: 90%; max-width: 400px; text-align: center; padding: 20px; }
+        h1 { color: #333; margin-bottom: 30px; font-size: 2em; }
         .link-card {
-            background: white;
-            display: block;
-            padding: 15px;
-            margin: 10px 0;
-            text-decoration: none;
-            color: #333;
-            border-radius: 10px;
-            font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: 0.2s;
+            background: white; display: flex; align-items: center; padding: 15px 25px; 
+            margin: 12px 0; text-decoration: none; color: #333; border-radius: 12px; 
+            font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s;
         }
-        .link-card:hover { transform: scale(1.02); }
+        .link-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); }
+        .icon-spacing { margin-right: 20px; font-size: 1.4em; width: 30px; text-align: center; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Denis Moroni</h1>
-        <a class='link-card' href='mailto:denmoroni87@gmail.com' style='border-left: 8px solid #DB4437'>Gmail</a><a class='link-card' href='https://instagram.com/denmoroni' style='border-left: 8px solid #E1306C'>Instagram</a><a class='link-card' href='https://facebook.com/denis.moroni' style='border-left: 8px solid #4267B2'>Facebook</a><a class='link-card' href='https://t.me/Denmoroni' style='border-left: 8px solid #0088cc'>Telegram</a><a class='link-card' href='https://wa.me/393496887076' style='border-left: 8px solid #25D366'>WhatsApp</a>
+        <a class='link-card' href='mailto:denmoroni87@gmail.com' target='_blank' style='border-left: 8px solid #DB4437'><i class='fas fa-envelope icon-spacing'></i> Gmail</a><a class='link-card' href='https://instagram.com/denmoroni' target='_blank' style='border-left: 8px solid #E1306C'><i class='fab fa-instagram icon-spacing'></i> Instagram</a><a class='link-card' href='https://facebook.com/denis.moroni' target='_blank' style='border-left: 8px solid #4267B2'><i class='fab fa-facebook-f icon-spacing'></i> Facebook</a><a class='link-card' href='https://t.me/Denmoroni' target='_blank' style='border-left: 8px solid #0088cc'><i class='fab fa-telegram-plane icon-spacing'></i> Telegram</a><a class='link-card' href='https://wa.me/393496887076' target='_blank' style='border-left: 8px solid #25D366'><i class='fab fa-whatsapp icon-spacing'></i> WhatsApp</a><a class='link-card' href='https://www.youtube.com/@dionisioelmoro7598' target='_blank' style='border-left: 8px solid #FF0000'><i class='fab fa-youtube icon-spacing'></i> YouTube</a>
     </div>
 </body>
 </html>
